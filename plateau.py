@@ -3,7 +3,7 @@ import random
 
 class Plateau:
     def __init__(self):
-        self.navire = Navire()
+        # self.navire = Navire()
         self.board = [[0 for i in range(10)] for j in range(10)]
         print(self.board)
 
