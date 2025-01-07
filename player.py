@@ -1,6 +1,8 @@
 from navire import PorteAvion, Croiseur, Destroyer, SousMarin
 from plateau import Plateau
 import random
+import tkinter as tk
+from tkinter import messagebox
 
 class Player:
     def __init__(self, name):
@@ -8,7 +10,7 @@ class Player:
         self.plateau = Plateau()
         self.navires = []
         self.nbNavire = 0
-        
+
     def placerNavireRandom(self):
         navires = [PorteAvion(), Croiseur(), Destroyer(), Destroyer(), SousMarin(), SousMarin()]
         while self.nbNavire < len(navires):

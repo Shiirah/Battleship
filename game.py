@@ -30,6 +30,23 @@ plateau = Plateau()
 board = plateau.board
 
 #################### Fonction ####################
+def victoire(nomGagnant):
+    ScreenVictoire = tk.Toplevel()
+
+    ScreenVictoire.overrideredirect(True)
+    mainappWidth = mainapp.winfo_width()
+    mainappHeight = mainapp.winfo_height()
+    victoireWidth = 300
+    victoireHeight = 200
+    positionTop = (mainappHeight // 2) - (victoireWidth // 2)
+    positionLeft = (mainappWidth // 2) - (victoireHeight // 2)
+    ScreenVictoire.geometry(f"{victoireWidth}x{victoireHeight}+{positionLeft}+{positionTop}")
+    tk.Label(ScreenVictoire, text=f"{nomGagnant} a gagné !", font=("Arial", 18, "bold")).pack(pady=20)
+    
+    def quitter():
+        ScreenVictoire.destroy()
+        mainapp.quit()
+    tk.Button(ScreenVictoire, text="Quitter", command=quitter, font=("Arial", 12)).pack(pady=10)
 
 def checkFin():
     if all(navire.isDead() for navire in ordi.navires):
@@ -55,7 +72,7 @@ def tirer(x, y):
         board_adverse[x][y].config(text="O", bg="blue", state="disabled")
 
     if checkFin():
-        mainapp.destroy()
+        victoire("Joueur")
     else:
         tir_ordi()
 
@@ -82,7 +99,7 @@ def tir_ordi():
         player.plateau.board[x][y] = 'O'
 
     if checkFin():
-        mainapp.destroy()
+        victoire("Ordinateur")
 
 def majDead(frame, data, titre):
     for widget in frame.winfo_children():
