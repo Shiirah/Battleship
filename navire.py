@@ -1,7 +1,9 @@
 import random
 
 class Navire:
-    def __init__(self,taille, ):
+    # Classe navire + heritage pour chaque type de navire 
+    # Chaque navire a une liste de position, une taille et un nombre de navire en fonction du type récupérer en paramètre lors de l'heritage
+    def __init__(self,taille):
         self.taille = taille
         self.pos = []
         self.hits = [False] * self.taille
