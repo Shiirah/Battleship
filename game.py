@@ -1,6 +1,7 @@
 import random
 import tkinter as tk
 import pygame
+import time
 from navire import Navire, PorteAvion, Croiseur, Destroyer, SousMarin
 from plateau import Plateau
 from player import Player
@@ -30,9 +31,9 @@ plateau = Plateau()
 board = plateau.board
 
 pygame.mixer.init()
-explosionSound = pygame.mixer.Sound("explosion.mp3")
-gameover = pygame.mixer.Sound("gameover.mp3")
-win = pygame.mixer.Sound("win.mp3")
+explosionSound = pygame.mixer.Sound("./assets/explosion.mp3")
+gameover = pygame.mixer.Sound("./assets/gameover.mp3")
+win = pygame.mixer.Sound("./assets/win.mp3")
 
 #################### Fonction ####################
 def victoire(nomGagnant):
@@ -88,7 +89,6 @@ def tir_ordi():
         y = random.randint(0, 9)
         if player.plateau.board[x][y] not in ('X', 'O'):
             break
-
     if player.plateau.board[x][y] == 1:
         mon_board[x][y].config(text="X", bg="red")
         player.plateau.board[x][y] = 'X'
