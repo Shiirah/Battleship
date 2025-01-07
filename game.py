@@ -1,13 +1,14 @@
 import random
 import tkinter as tk
+import pygame
 from navire import Navire, PorteAvion, Croiseur, Destroyer, SousMarin
 from plateau import Plateau
 from player import Player
 
+
 ################# Variable #####################
 
 ordi = Player("Ordinateur")
-ordi.placerNavireRandom()
 
 navireDeadOrdi = {
     "PorteAvion": 0,
@@ -17,7 +18,6 @@ navireDeadOrdi = {
     }
 
 player = Player("Player")
-player.placerNavireRandom()
 
 navireDeadPlayer = {
     "PorteAvion": 0,
@@ -29,10 +29,14 @@ navireDeadPlayer = {
 plateau = Plateau()
 board = plateau.board
 
+pygame.mixer.init()
+explosionSound = pygame.mixer.Sound("explosion.mp3")
+gameover = pygame.mixer.Sound("gameover.mp3")
+win = pygame.mixer.Sound("win.mp3")
+
 #################### Fonction ####################
 def victoire(nomGagnant):
     ScreenVictoire = tk.Toplevel()
-
     ScreenVictoire.overrideredirect(True)
     mainappWidth = mainapp.winfo_width()
     mainappHeight = mainapp.winfo_height()
@@ -64,6 +68,7 @@ def tirer(x, y):
             if (x, y) in navire.pos:
                 index = navire.pos.index((x, y))
                 navire.hits[index] = True
+                explosionSound.play()
                 if navire.isDead():
                     type_navire = type(navire).__name__
                     navireDeadOrdi[type_navire] += 1
@@ -73,6 +78,7 @@ def tirer(x, y):
 
     if checkFin():
         victoire("Joueur")
+        win.play()
     else:
         tir_ordi()
 
@@ -90,6 +96,7 @@ def tir_ordi():
             if (x, y) in navire.pos:
                 index = navire.pos.index((x, y))
                 navire.hits[index] = True
+                explosionSound.play()
                 if navire.isDead():
                     type_navire = type(navire).__name__
                     navireDeadPlayer[type_navire] += 1
@@ -100,6 +107,7 @@ def tir_ordi():
 
     if checkFin():
         victoire("Ordinateur")
+        gameover.play()
 
 def majDead(frame, data, titre):
     for widget in frame.winfo_children():
@@ -115,6 +123,8 @@ def majDead(frame, data, titre):
 mainapp = tk.Tk()
 mainapp.title('Battleship')
 
+ordi.placerNavireRandom()
+player.placerNavireRandom()
 
 tk.Label(mainapp, text="Mon plateau", font=("Arial", 14)).grid(row=0, column=0, columnspan=10)
 
@@ -145,5 +155,7 @@ majDead(frameDeadOrdi, navireDeadOrdi, "Navires coulés adversaire")
 frameDeadPlayer = tk.Frame(mainapp, relief="ridge", borderwidth=2)
 frameDeadPlayer.grid(row=3, column=22, rowspan=5, padx=10, pady=5)
 majDead(frameDeadPlayer, navireDeadPlayer, "Navires coulés joueur")
+
+
 
 mainapp.mainloop()

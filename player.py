@@ -1,8 +1,8 @@
 from navire import PorteAvion, Croiseur, Destroyer, SousMarin
 from plateau import Plateau
+from tkinter import messagebox
 import random
 import tkinter as tk
-from tkinter import messagebox
 
 class Player:
     def __init__(self, name):
@@ -29,3 +29,4 @@ class Player:
                     self.plateau.board[x][y] = 1
                 self.nbNavire += 1
                 self.navires.append(navire)
+
