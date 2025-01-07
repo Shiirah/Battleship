@@ -8,7 +8,7 @@ class Player:
         self.plateau = Plateau()
         self.navires = []
         self.nbNavire = 0
-
+        
     def placerNavireRandom(self):
         navires = [PorteAvion(), Croiseur(), Destroyer(), Destroyer(), SousMarin(), SousMarin()]
         while self.nbNavire < len(navires):
@@ -27,4 +27,3 @@ class Player:
                     self.plateau.board[x][y] = 1
                 self.nbNavire += 1
                 self.navires.append(navire)
-
