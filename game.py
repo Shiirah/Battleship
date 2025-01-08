@@ -5,7 +5,7 @@ import time
 from navire import Navire, PorteAvion, Croiseur, Destroyer, SousMarin
 from plateau import Plateau
 from player import Player
-
+import globals
 
 ################# Variable #####################
 
@@ -41,17 +41,17 @@ win = pygame.mixer.Sound("./assets/win.mp3")
 
 # fonction appeler lors de la victoire d'un camp, fait apparaitre un popup au centre de la page avec un message de victoire et un bouton quitter
 # nomgagant a mettre en parametre quand la fonction est appelée
-def victoire(nomGagnant):
-    ScreenVictoire = tk.Toplevel()
-    ScreenVictoire.overrideredirect(True)
+def victoire(nomGagnant,precision):
     mainappWidth = mainapp.winfo_width()
     mainappHeight = mainapp.winfo_height()
-    victoireWidth = 300
-    victoireHeight = 200
+    ScreenVictoire = tk.Toplevel()
+    ScreenVictoire.overrideredirect(True)
+    victoireWidth = 500
+    victoireHeight = 150
     positionTop = (mainappHeight // 2) - (victoireWidth // 2)
     positionLeft = (mainappWidth // 2) - (victoireHeight // 2)
     ScreenVictoire.geometry(f"{victoireWidth}x{victoireHeight}+{positionLeft}+{positionTop}")
-    tk.Label(ScreenVictoire, text=f"{nomGagnant} a gagné !", font=("Arial", 18, "bold")).pack(pady=20)
+    tk.Label(ScreenVictoire, text=f"{nomGagnant} a gagné avec {precision}% de précision !", font=("Arial", 18, "bold")).pack(pady=20)
     
     def quitter():
         ScreenVictoire.destroy()
@@ -67,6 +67,14 @@ def checkFin():
         print("rip")
         return True
     return False
+
+def majPrecision():
+    playerACC = globals.PRECISIONPLAYER
+    ordiACC = globals.PRECISIONORDI
+
+    labelPrecisionPlayer.config(text=f"Précision Joueur: {playerACC}%")
+    labelPrecisionOrdi.config(text=f"Précision Ordinateur: {ordiACC}%")
+
 
 # fonction intégré dans les boutons pour que lors du clic, on verifie a la pos cliqué si la valeur est égale a 1
 # change la couleur de la case et la désactive apres un clic et joue un son d'explosion en cas de succes
@@ -85,9 +93,11 @@ def tirer(x, y):
                     majDead(frameDeadOrdi, navireDeadOrdi, "Navires coulés adversaire")
     else:
         board_adverse[x][y].config(text="O", bg="blue", state="disabled")
+        globals.PRECISIONPLAYER -= 1
+        majPrecision()
 
     if checkFin():
-        victoire("Joueur")
+        victoire("Joueur",globals.PRECISIONPLAYER)
         win.play()
     else:
         tir_ordi()
@@ -113,9 +123,11 @@ def tir_ordi():
     else:
         mon_board[x][y].config(text="O", bg="blue")
         player.plateau.board[x][y] = 'O'
+        globals.PRECISIONORDI -= 1
+        majPrecision()
 
     if checkFin():
-        victoire("Ordinateur")
+        victoire("Ordinateur",globals.PRECISIONORDI)
         gameover.play()
 
 # chatgpt qui a fait à 100%
@@ -133,6 +145,13 @@ def majDead(frame, data, titre):
 # creation de la mainapp + titre
 mainapp = tk.Tk()
 mainapp.title('Battleship')
+screenWidth = mainapp.winfo_screenwidth()
+screenHeight = mainapp.winfo_screenheight()
+windowWidth = 700
+windowHeight = 1000
+geometryX = (screenWidth // 2) - (windowWidth // 2)
+geometryY = (screenHeight // 2) - (windowHeight // 2)
+mainapp.geometry(f"{windowWidth}x{windowHeight}+{geometryX}+{geometryY}")
 
 # appel de la fonction pour placer les navires de chaque joueur
 # J'ai pas réussi le placement manuel
@@ -171,6 +190,12 @@ frameDeadPlayer = tk.Frame(mainapp, relief="ridge", borderwidth=2)
 frameDeadPlayer.grid(row=3, column=22, rowspan=5, padx=10, pady=5)
 majDead(frameDeadPlayer, navireDeadPlayer, "Navires coulés joueur")
 
+# affiche la precision des joueurs
+labelPrecisionPlayer = tk.Label(mainapp, text="Précision Joueur: 100%", font=("Arial", 12, "bold"))
+labelPrecisionPlayer.grid(row=14, column=22, padx=10, pady=5)
+
+labelPrecisionOrdi = tk.Label(mainapp, text="Précision Ordinateur: 100%", font=("Arial", 12, "bold"))
+labelPrecisionOrdi.grid(row=2, column=22, padx=10, pady=5)
 
 
 mainapp.mainloop()
